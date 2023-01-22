@@ -101,7 +101,7 @@ class HourlyUnits {
 }
 
 class Hourly {
-  List<int>? time;
+  List<String>? time;
   List<int>? relativehumidity2m;
   List<double>? apparentTemperature;
   List<int>? weathercode;
@@ -115,7 +115,7 @@ class Hourly {
       this.surfacePressure});
 
   Hourly.fromJson(Map<String, dynamic> json) {
-    time = json['time'].cast<int>();
+    time = json['time'].cast<String>();
     relativehumidity2m = json['relativehumidity_2m'].cast<int>();
     apparentTemperature = json['apparent_temperature'].cast<double>();
     weathercode = json['weathercode'].cast<int>();
@@ -171,7 +171,7 @@ class DailyUnits {
 }
 
 class Daily {
-  List<int>? time;
+  List<String>? time;
   List<int>? weathercode;
   List<double>? apparentTemperatureMax;
   List<double>? apparentTemperatureMin;
@@ -187,7 +187,7 @@ class Daily {
       this.sunset});
 
   Daily.fromJson(Map<String, dynamic> json) {
-    time = json['time'].cast<int>();
+    time = json['time']!.cast<String>();
     weathercode = json['weathercode'].cast<int>();
     apparentTemperatureMax = json['apparent_temperature_max'].cast<double>();
     apparentTemperatureMin = json['apparent_temperature_min'].cast<double>();

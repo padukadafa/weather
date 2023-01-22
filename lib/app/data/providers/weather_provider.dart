@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:meta/meta.dart';
 import 'package:weather/app/data/models/weather_model.dart';
 
 const baseUrl =
-    'https://api.open-meteo.com/v1/forecast?latitude=-6.18&longitude=106.82&daily=weathercode,apparent_temperature_max,apparent_temperature_min,sunrise,sunset&timeformat=unixtime&timezone=Asia%2FSingapore';
+    'https://api.open-meteo.com/v1/forecast?latitude=-6.18&longitude=106.82&daily=weathercode,apparent_temperature_max,apparent_temperature_min,sunrise,sunset&timezone=Asia%2FSingapore&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,surface_pressure';
 
 class WeatherApiClient {
   final Dio httpClient;

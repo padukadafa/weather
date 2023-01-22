@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_weather_bg_null_safety/utils/print_utils.dart';
 import 'package:get/get.dart';
 import 'package:weather/app/data/models/weather_model.dart';
 import 'package:weather/app/data/providers/weather_provider.dart';
+import 'package:weather/app/modules/home/views/current_weather_view.dart';
+import 'package:weather/app/modules/home/views/loading_view.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -25,31 +28,36 @@ class HomeView extends GetView<HomeController> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
             ),
+            Container(
+              height: double.maxFinite,
+              width: double.maxFinite,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 3,
+                  sigmaY: 3,
+                ),
+                child: Container(),
+              ),
+            ),
             FutureBuilder<Weather?>(
               future: WeatherApiClient(httpClient: Dio()).getWeather(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text("You got the data");
-                } else {
-                  return Center(
-                      child: Container(
-                    padding: const EdgeInsets.all(16),
-                    height: 120,
-                    width: 120,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
-                          blurRadius: 10,
-                          spreadRadius: 0,
-                        ),
-                      ],
+                  return SingleChildScrollView(
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 50),
+                          CurrentWeatherView(
+                            weather: snapshot.data!,
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Text("Getting data..."),
-                  ));
+                  );
+                } else {
+                  return Center(child: LoadingView());
                 }
               },
             ),
