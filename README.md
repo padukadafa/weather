@@ -1,6 +1,6 @@
 # weather
 
-This is my my study case on Flutter.
+This is my study case with Flutter.
 I use [Open Meteo](https://open-meteo.com/) for the API
 
 ## Screenshots
