@@ -44,35 +44,32 @@ class HomeView extends GetView<HomeController> {
                 child: Container(),
               ),
             ),
-            FutureBuilder<Weather?>(
-              future: controller.init(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return SingleChildScrollView(
-                    child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 50),
-                          CurrentWeatherView(weather: snapshot.data!),
-                          SizedBox(height: 20),
-                          WeatherTodayView(
-                            weather: snapshot.data!,
-                          ),
-                          SizedBox(height: 20),
-                          WeatherInfoView(),
-                          SizedBox(height: 20),
-                          OtherDayWeatherView(weather: snapshot.data!),
-                          SizedBox(height: 20),
-                        ],
+            Obx(() {
+              return (controller.weather.value != null)
+                  ? SingleChildScrollView(
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 50),
+                            CurrentWeatherView(
+                                weather: controller.weather.value!),
+                            SizedBox(height: 20),
+                            WeatherTodayView(
+                              weather: controller.weather.value!,
+                            ),
+                            SizedBox(height: 20),
+                            WeatherInfoView(weather: controller.weather.value!),
+                            SizedBox(height: 20),
+                            OtherDayWeatherView(
+                                weather: controller.weather.value!),
+                            SizedBox(height: 20),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                } else {
-                  return Center(child: LoadingView());
-                }
-              },
-            ),
+                    )
+                  : Center(child: LoadingView());
+            })
           ],
         ),
       ),

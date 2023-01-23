@@ -13,9 +13,13 @@ class HomeController extends GetxController {
   Rx<Placemark?> placemark = Rx(null);
   Rx<int> currentIndex = Rx(0);
   Rx<WeatherType> weatherType = Rx(WeatherType.sunny);
+  Rx<String> statusText = Rx("Getting data...");
+  Rx<bool> enableTry = Rx(false);
+  Rx<Weather?> weather = Rx(null);
   @override
   void onInit() {
     super.onInit();
+    init();
   }
 
   @override
@@ -38,24 +42,30 @@ class HomeController extends GetxController {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
+      statusText.value = "Location services are disabled.";
       return Future.error('Location services are disabled.');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
+      statusText.value = "Request location permission.";
       permission = await Geolocator.requestPermission();
+
       if (permission == LocationPermission.denied) {
         // Permissions are denied, next time you could try
         // requesting permissions again (this is also where
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
+        statusText.value = "Location permissions are denied.";
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
+      statusText.value =
+          "Location permissions are permanently denied, we cannot request permissions.";
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
@@ -75,19 +85,29 @@ class HomeController extends GetxController {
   }
 
   Future<Weather?> init() async {
+    statusText.value = "Get location...";
     Position pos = await _determinePosition();
-    Weather? weather = await WeatherApiClient(httpClient: dio).getWeather(pos);
+    statusText.value = "Get data...";
+    final weather = await WeatherApiClient(httpClient: dio).getWeather(pos);
+    if (weather.runtimeType != Weather) {
+      statusText.value = "Failed to get Data. Check your Internet";
+      enableTry.value = true;
+      return null;
+    }
+
+    enableTry.value = false;
     await getLocation(pos);
     getCurrentIndex(weather!);
 
     weatherType.value = getWeatherType(currentIndex.value);
     if (weather != null) {
-      return weather;
+      this.weather.value = weather;
+      update();
     }
   }
 
   getCurrentIndex(Weather weather) {
-    currentIndex.value = DateTime.now().hour;
+    currentIndex.value = DateTime.now().toLocal().hour;
   }
 
   Widget weatherIcon(int code) {
@@ -285,5 +305,57 @@ class HomeController extends GetxController {
     }
 
     return WeatherType.sunny;
+  }
+
+  getNameOfWeek(int day) {
+    switch (day) {
+      case 1:
+        return "Sunday";
+      case 2:
+        return "Monday";
+      case 3:
+        return "Tuesday";
+      case 4:
+        return "Wednesday";
+      case 5:
+        return "Thursday";
+      case 6:
+        return "Friday";
+      case 7:
+        return "Saturday";
+      default:
+        return "Unknown";
+    }
+  }
+
+  getNameOfMonth(int month) {
+    switch (month) {
+      case 1:
+        return "January";
+      case 2:
+        return "February";
+      case 3:
+        return "March";
+      case 4:
+        return "April";
+      case 5:
+        return "May";
+      case 6:
+        return "June";
+      case 7:
+        return "July";
+      case 8:
+        return "August";
+      case 9:
+        return "September";
+      case 10:
+        return "October";
+      case 11:
+        return "November";
+      case 12:
+        return "December";
+      default:
+        return "Unknown";
+    }
   }
 }

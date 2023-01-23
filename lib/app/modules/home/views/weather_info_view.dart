@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather/app/data/models/weather_model.dart';
+import 'package:weather/app/modules/home/controllers/home_controller.dart';
 
-class WeatherInfoView extends GetView {
-  const WeatherInfoView({Key? key}) : super(key: key);
+class WeatherInfoView extends GetView<HomeController> {
+  Weather weather;
+  WeatherInfoView({Key? key, required this.weather}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    Hourly data = weather.hourly!;
+    HourlyUnits units = weather.hourlyUnits!;
+    int currentIndex = controller.currentIndex.value;
     return Container(
       decoration: BoxDecoration(
         color: Color(0xff252525).withOpacity(0.3),
@@ -33,7 +39,7 @@ class WeatherInfoView extends GetView {
               ),
             ),
             trailing: Text(
-              "34*",
+              "${data.temperature2m![currentIndex]} ${units.temperature2m}",
               style: GoogleFonts.lato(
                   color: Colors.white, fontWeight: FontWeight.bold),
             ),
@@ -50,7 +56,7 @@ class WeatherInfoView extends GetView {
               ),
             ),
             trailing: Text(
-              "20 km/s",
+              "${data.windspeed10m![currentIndex]} ${units.windspeed10m}",
               style: GoogleFonts.lato(
                   color: Colors.white, fontWeight: FontWeight.bold),
             ),
@@ -61,13 +67,13 @@ class WeatherInfoView extends GetView {
               color: Colors.white,
             ),
             title: Text(
-              "Humidity",
+              "Soil Moisture",
               style: GoogleFonts.lato(
                 color: Colors.white,
               ),
             ),
             trailing: Text(
-              "34",
+              "${data.soilMoisture01cm![currentIndex]} ${units.soilMoisture01cm}",
               style: GoogleFonts.lato(
                   color: Colors.white, fontWeight: FontWeight.bold),
             ),
@@ -84,7 +90,7 @@ class WeatherInfoView extends GetView {
               ),
             ),
             trailing: Text(
-              "30 m",
+              "${data.visibility![currentIndex]} ${units.visibility}",
               style: GoogleFonts.lato(
                   color: Colors.white, fontWeight: FontWeight.bold),
             ),
@@ -101,7 +107,7 @@ class WeatherInfoView extends GetView {
               ),
             ),
             trailing: Text(
-              "1.01 atm",
+              "${data.surfacePressure![currentIndex]} ${units.surfacePressure}",
               style: GoogleFonts.lato(
                   color: Colors.white, fontWeight: FontWeight.bold),
             ),
@@ -118,7 +124,7 @@ class WeatherInfoView extends GetView {
               ),
             ),
             trailing: Text(
-              "60%",
+              "${data.cloudcover![currentIndex]} ${units.cloudcover}",
               style: GoogleFonts.lato(
                   color: Colors.white, fontWeight: FontWeight.bold),
             ),

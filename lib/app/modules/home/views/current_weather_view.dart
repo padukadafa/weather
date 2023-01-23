@@ -12,31 +12,95 @@ class CurrentWeatherView extends GetView<HomeController> {
   CurrentWeatherView({Key? key, required this.weather}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Text(
-          "${controller.placemark.value!.administrativeArea ?? ""}",
-          style: GoogleFonts.lato(
-            color: Colors.white,
-            fontSize: 21,
-            fontWeight: FontWeight.w500,
-            shadows: [
-              Shadow(
-                color: Colors.grey.withOpacity(0.8),
-                blurRadius: 6,
+        Column(
+          children: [
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text:
+                        "${weather.hourly!.temperature2m![controller.currentIndex.value]}",
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontSize: 64,
+                      fontWeight: FontWeight.w500,
+                      shadows: [
+                        Shadow(
+                          color: Colors.grey.withOpacity(0.8),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextSpan(
+                    text: " ${weather.dailyUnits!.temperature2mMax}",
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w500,
+                      shadows: [
+                        Shadow(
+                          color: Colors.grey.withOpacity(0.8),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            Text(
+              "${controller.getWeatherName(weather.hourly!.weathercode![controller.currentIndex.value])}",
+              style: GoogleFonts.lato(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                shadows: [
+                  Shadow(
+                    color: Colors.grey.withOpacity(0.8),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+            ),
+            Text(
+              "H:${weather.daily!.temperature2mMax!.first}${weather.dailyUnits!.temperature2mMax} L:${weather.daily!.temperature2mMin!.first}${weather.dailyUnits!.temperature2mMin}",
+              style: GoogleFonts.lato(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                shadows: [
+                  Shadow(
+                    color: Colors.grey.withOpacity(0.8),
+                    blurRadius: 6,
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
-        RichText(
-          text: TextSpan(
+        Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Color(0xff252525).withOpacity(0.3),
+            borderRadius: BorderRadius.circular(12),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: Colors.grey.withOpacity(0.4),
+            //     blurRadius: 10,
+            //   ),
+            // ],
+          ),
+          child: Column(
             children: [
-              TextSpan(
-                text:
-                    "${weather.hourly!.temperature2m![controller.currentIndex.value]}",
+              Text(
+                "${controller.placemark.value!.subLocality ?? ""}",
                 style: GoogleFonts.lato(
                   color: Colors.white,
-                  fontSize: 64,
+                  fontSize: 21,
                   fontWeight: FontWeight.w500,
                   shadows: [
                     Shadow(
@@ -46,51 +110,18 @@ class CurrentWeatherView extends GetView<HomeController> {
                   ],
                 ),
               ),
-              TextSpan(
-                text: " ${weather.dailyUnits!.temperature2mMax}",
+              SizedBox(height: 10),
+              Text(
+                "${DateTime.now().day} ${controller.getNameOfMonth(DateTime.now().month)}",
                 style: GoogleFonts.lato(
                   color: Colors.white,
-                  fontSize: 32,
                   fontWeight: FontWeight.w500,
-                  shadows: [
-                    Shadow(
-                      color: Colors.grey.withOpacity(0.8),
-                      blurRadius: 6,
-                    ),
-                  ],
+                  fontSize: 21,
                 ),
               ),
             ],
           ),
         ),
-        Text(
-          "${controller.getWeatherName(weather.hourly!.weathercode![controller.currentIndex.value])}",
-          style: GoogleFonts.lato(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            shadows: [
-              Shadow(
-                color: Colors.grey.withOpacity(0.8),
-                blurRadius: 6,
-              ),
-            ],
-          ),
-        ),
-        Text(
-          "H:${weather.daily!.temperature2mMax!.first}${weather.dailyUnits!.temperature2mMax} L:${weather.daily!.temperature2mMin!.first}${weather.dailyUnits!.temperature2mMin}",
-          style: GoogleFonts.lato(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            shadows: [
-              Shadow(
-                color: Colors.grey.withOpacity(0.8),
-                blurRadius: 6,
-              ),
-            ],
-          ),
-        )
       ],
     );
   }
