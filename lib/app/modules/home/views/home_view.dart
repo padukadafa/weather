@@ -12,6 +12,9 @@ import 'package:weather/app/data/models/weather_model.dart';
 import 'package:weather/app/data/providers/weather_provider.dart';
 import 'package:weather/app/modules/home/views/current_weather_view.dart';
 import 'package:weather/app/modules/home/views/loading_view.dart';
+import 'package:weather/app/modules/home/views/other_day_weather_view.dart';
+import 'package:weather/app/modules/home/views/weather_info_view.dart';
+import 'package:weather/app/modules/home/views/weather_today_view.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -23,11 +26,13 @@ class HomeView extends GetView<HomeController> {
       child: Scaffold(
         body: Stack(
           children: [
-            WeatherBg(
-              weatherType: WeatherType.cloudy,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-            ),
+            Obx(() {
+              return WeatherBg(
+                weatherType: controller.weatherType.value,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+              );
+            }),
             Container(
               height: double.maxFinite,
               width: double.maxFinite,
@@ -40,7 +45,7 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
             FutureBuilder<Weather?>(
-              future: WeatherApiClient(httpClient: Dio()).getWeather(),
+              future: controller.init(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return SingleChildScrollView(
@@ -49,9 +54,16 @@ class HomeView extends GetView<HomeController> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(height: 50),
-                          CurrentWeatherView(
+                          CurrentWeatherView(weather: snapshot.data!),
+                          SizedBox(height: 20),
+                          WeatherTodayView(
                             weather: snapshot.data!,
                           ),
+                          SizedBox(height: 20),
+                          WeatherInfoView(),
+                          SizedBox(height: 20),
+                          OtherDayWeatherView(weather: snapshot.data!),
+                          SizedBox(height: 20),
                         ],
                       ),
                     ),

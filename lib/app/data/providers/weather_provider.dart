@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:weather/app/data/models/weather_model.dart';
-
-const baseUrl =
-    'https://api.open-meteo.com/v1/forecast?latitude=-6.18&longitude=106.82&daily=weathercode,apparent_temperature_max,apparent_temperature_min,sunrise,sunset&timezone=Asia%2FSingapore&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,surface_pressure';
 
 class WeatherApiClient {
   final Dio httpClient;
   WeatherApiClient({required this.httpClient});
 
-  Future<Weather?> getWeather() async {
+  Future<Weather?> getWeather(Position pos) async {
+    print("${pos.latitude},${pos.longitude}");
+    String baseUrl =
+        'https://api.open-meteo.com/v1/forecast?latitude=${pos.latitude}&longitude=${pos.longitude}&hourly=temperature_2m,relativehumidity_2m,apparent_temperature,precipitation,weathercode,surface_pressure,cloudcover,visibility,windspeed_10m,soil_moisture_0_1cm&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=GMT';
     try {
       final response = await httpClient.get(baseUrl);
       if (response.statusCode == 200) {
@@ -16,7 +18,10 @@ class WeatherApiClient {
       } else
         print('erro -get');
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
+    return null;
   }
 }
